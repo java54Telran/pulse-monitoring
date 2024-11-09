@@ -48,9 +48,9 @@ public class App {
 
 							jumpProcessing(patientId, currentValue, lastValue, timestamp);
 						}
-						putLastValue(patientId, lastValue);
+						
 					}
-
+					putLastValue(patientId, lastValue);
 				} else {
 					logger.warning(r.getEventName() + " event name but should be INSERT");
 				}
@@ -77,8 +77,9 @@ public class App {
 				.tableName(LAST_PULSE_VALUES_TABLE_NAME)
 				.build();
 		Map<String, AttributeValue> returnedItem = clientDynamo.getItem(request).item();
-		if (returnedItem == null) {
-			logger.warning(String.format("no pulse value found in table %s for patient %s, taken current value %d"));
+		if (returnedItem == null || returnedItem.get(VALUE_ATTRIBUTE) == null) {
+			logger.warning(String.format("no pulse value found in table %s for patient %s, taken current value %d",
+			 LAST_PULSE_VALUES_TABLE_NAME, patientId, currentValue));
 		} else {
 			String resStr = returnedItem.get(VALUE_ATTRIBUTE).n();
 			res = Integer.parseInt(resStr);
