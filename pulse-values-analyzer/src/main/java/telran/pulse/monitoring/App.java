@@ -101,28 +101,28 @@ public class App {
 			logger.fine("Range taken from provider API " + res);
 		}
 		return res;
-		
+
 	}
 
 	private Range getRangeFromProvider(String patientIdStr) {
 
-HttpRequest request = HttpRequest.newBuilder(getURL(patientIdStr)).build();
-HttpResponse<String> response;
-try {
-	response = httpClient.send(request, BodyHandlers.ofString());
-} catch (IOException | InterruptedException e) {
-	throw new RuntimeException(e);
-}
-String bodyJSON = response.body();
-if (response.statusCode() >= 400) {
-	throw new RuntimeException(bodyJSON);
-}
-return getRangeFromJSON(bodyJSON);
+		HttpRequest request = HttpRequest.newBuilder(getURL(patientIdStr)).build();
+		HttpResponse<String> response;
+		try {
+			response = httpClient.send(request, BodyHandlers.ofString());
+		} catch (IOException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		String bodyJSON = response.body();
+		if (response.statusCode() >= 400) {
+			throw new RuntimeException(bodyJSON);
+		}
+		return getRangeFromJSON(bodyJSON);
 	}
 
 	private Range getRangeFromJSON(String bodyJSON) {
-		 JSONObject jsonObj = new JSONObject(bodyJSON);
-		 return new Range(jsonObj.getInt(MIN_FIELD_NAME), jsonObj.getInt(MAX_FIELD_NAME));
+		JSONObject jsonObj = new JSONObject(bodyJSON);
+		return new Range(jsonObj.getInt(MIN_FIELD_NAME), jsonObj.getInt(MAX_FIELD_NAME));
 	}
 
 	private URI getURL(String patientIdStr) {
